@@ -124,11 +124,14 @@ textarea.sr{position:absolute;left:-9999px;top:0}
 <button class="btn primary" id="copy">Скопировать промпт</button>
 
 <h2>Открыть в ассистенте</h2>
+<p class="hint" style="margin:0 0 10px">Промпт скопируется, вставьте его в чат первым сообщением.</p>
 <div class="apps">
-<button class="app" data-url="https://chatgpt.com/?q={q}" data-prefill="1"><span class="dot" style="background:#10A37F"></span><span><b>ChatGPT</b><small>промпт подставится сам</small></span></button>
-<button class="app" data-url="https://claude.ai/new?q={q}" data-prefill="1"><span class="dot" style="background:#D97757"></span><span><b>Claude</b><small>промпт подставится сам</small></span></button>
-<button class="app" data-url="https://chat.deepseek.com/" data-prefill="0"><span class="dot" style="background:#4D6BFE"></span><span><b>DeepSeek</b><small>скопируется, вставьте в чат</small></span></button>
-<button class="app" data-url="https://giga.chat/" data-prefill="0"><span class="dot" style="background:#21A038"></span><span><b>GigaChat</b><small>скопируется, вставьте в чат</small></span></button>
+<button class="app" data-url="https://chatgpt.com/"><span class="dot" style="background:#10A37F"></span><span><b>ChatGPT</b><small>нужен VPN</small></span></button>
+<button class="app" data-url="https://claude.ai/new"><span class="dot" style="background:#D97757"></span><span><b>Claude</b><small>нужен VPN</small></span></button>
+<button class="app" data-url="https://chat.deepseek.com/"><span class="dot" style="background:#4D6BFE"></span><span><b>DeepSeek</b><small>без VPN</small></span></button>
+<button class="app" data-url="https://giga.chat/"><span class="dot" style="background:#21A038"></span><span><b>GigaChat</b><small>без VPN</small></span></button>
+<button class="app" data-url="https://alice.yandex.ru/"><span class="dot" style="background:#8A3FFC"></span><span><b>Алиса AI</b><small>без VPN</small></span></button>
+<button class="app" data-url="https://chat.qwen.ai/"><span class="dot" style="background:#615CED"></span><span><b>Qwen</b><small>без VPN</small></span></button>
 </div>
 
 <h2>Сохранить себе</h2>
@@ -146,9 +149,9 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 async function copyText(text){try{await navigator.clipboard.writeText(text);return true;}catch(e){}const ta=$('#clip');ta.value=text;ta.select();ta.setSelectionRange(0,text.length);try{return document.execCommand('copy');}catch(e){return false;}}
 
 document.querySelectorAll('.app').forEach(b=>b.addEventListener('click',async()=>{
-  const url=b.dataset.url.replace('{q}',encodeURIComponent(P));
-  if(b.dataset.prefill!=='1'){await copyText(P);toast('Промпт скопирован, вставьте его в чат');}
-  window.open(url,'_blank','noopener');
+  const ok=await copyText(P);
+  toast(ok?'Промпт скопирован, вставьте его в чат':'Скопируйте промпт кнопкой выше и вставьте в чат');
+  window.open(b.dataset.url,'_blank','noopener');
 }));
 $('#copy').addEventListener('click',async()=>{const ok=await copyText(P);const b=$('#copy');b.textContent=ok?'Скопировано':'Выделите текст и скопируйте вручную';b.classList.toggle('done',ok);setTimeout(()=>{b.textContent='Скопировать промпт';b.classList.remove('done');},2000);});
 $('#copylink').addEventListener('click',async()=>{toast((await copyText(LINK))?'Ссылка на промпт скопирована':'Не удалось скопировать');});
